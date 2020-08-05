@@ -4,12 +4,13 @@ import { Link, Redirect } from 'react-router-dom';
 import { Card, Logo, Form, Input, Button, Error } from '../components/AuthForm';
 import { useAuth } from '../context/auth';
 
-function Login() {
+function Login(props) {
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [isError, setIsError] = useState(false);
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const { setAuthTokens } = useAuth();
+  const referrer = props.location.state.referrer || '/';
 
   function postLogin() {
     axios
@@ -31,7 +32,7 @@ function Login() {
   }
 
   if (isLoggedIn) {
-    return <Redirect to='/' />;
+    return <Redirect to={referrer} />;
   }
 
   return (
