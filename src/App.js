@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
 import PrivateRoute from './PrivateRoute';
 import Home from './pages/Home';
@@ -8,8 +8,17 @@ import SignUp from './pages/SignUp';
 import { AuthContext } from './context/auth';
 
 function App(props) {
+  const existingTokens = JSON.parse(localStorage.getItem('tokens'));
+  const [authTokens, setAuthTokens] = useState(existingTokens);
+
+  const setTokens = (data) => {
+    localStorage.setItem('tokens', JSON.stringify(data));
+    setAuthTokens(data);
+  };
+
   return (
-    <AuthContext.Provider value={true}>
+    //Now any component using our AuthContext can get tokens and set the tokens
+    <AuthContext.Provider value={{ authTokens, setAuthTokens: setTokens }}>
       <Router>
         <div>
           <ul>
