@@ -32,7 +32,21 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
+}
+
+.navigation-bar > ul {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.navigation-bar > ul li {
+  list-style-type: none;
+}
+
+.navigation-bar > ul li a {
+  text-decoration: none;
 }
