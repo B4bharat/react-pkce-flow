@@ -10,16 +10,6 @@ function Callback() {
 
   if (authorization_code && state) {
     if (state === window.localStorage.getItem('state')) {
-      // let params = {
-      //   grant_type: 'authorization_code',
-      //   client_id: 'noqoo',
-      //   redirect_uri: 'http://localhost:5003/',
-      //   code_verifier: window.localStorage.getItem('verifier'),
-      //   authorization_code,
-      // };
-
-      // axios
-      //   .post('http://127.0.0.1:5001/token', params)
       let bodyFormData = new FormData();
       bodyFormData.set('grant_type', 'authorization_code');
       bodyFormData.set('client_id', 'noqoo');
@@ -37,22 +27,21 @@ function Callback() {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
         .then(function (response) {
-          console.log(response);
+          console.log(response.data);
+
+          axios
+            .get('https://localhost:5000/api/v1/organisation/?page=1', {
+              headers: {
+                Authorization: 'Bearer ' + response.data.access_token,
+              },
+            })
+            .then(function (res) {
+              console.log('Organisation', res.data);
+            });
         })
         .catch(function (error) {
           console.log(error);
         });
-      // this.$axios
-      //   .$post('http://pkce-back.web/oauth/token', params)
-      //   .then((resp) => {
-      //     window.opener.postMessage(resp);
-      //     localStorage.removeItem('state');
-      //     localStorage.removeItem('verifier');
-      //     window.close();
-      //   })
-      //   .catch((e) => {
-      //     console.dir(e);
-      //   });
     }
   }
 
