@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
+import crypto from 'crypto-browserify';
+
 import PrivateRoute from './PrivateRoute';
 import Home from './pages/Home';
+import Callback from './pages/Callback';
 import Admin from './pages/Admin';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
@@ -16,9 +19,42 @@ function App(props) {
 
   useEffect(() => {
     if (clicked) {
-      // do something meaningful, Promises, if/else, whatever, and then
+      // Generate code verifier
+      function base64URLEncode(str) {
+        return str
+          .toString('base64')
+          .replace(/\+/g, '-')
+          .replace(/\//g, '_')
+          .replace(/=/g, '');
+      }
+      let verifier = base64URLEncode(crypto.randomBytes(32));
+      localStorage.setItem('verifier', verifier);
+
+      // Generate code challenge
+      function sha256(buffer) {
+        return crypto.createHash('sha256').update(buffer).digest();
+      }
+      let challenge = base64URLEncode(sha256(verifier));
+      localStorage.setItem('code_challenge', challenge);
+
+      // Generate state
+      function generateState(length) {
+        let result = '';
+        let characters =
+          'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let charactersLength = characters.length;
+        for (let i = 0; i < length; i++) {
+          result += characters.charAt(
+            Math.floor(Math.random() * charactersLength)
+          );
+        }
+        return result;
+      }
+      let state = generateState(6);
+      localStorage.setItem('state', state);
+
       window.location.assign(
-        'http://localhost:5001/auth?response_type=code&client_id=noqoo&code_challenge=MI7VPzD7S8WsO__e1weLFQ6A8vv_kSfTq9uWNhoWQ3s&code_challenge_method=S256&redirect_url=http://localhost:5003'
+        `http://localhost:5001/auth?client_id=noqoo&redirect_url=http://localhost:5003/callback&response_type=code&state=${state}&code_challenge=${challenge}&code_challenge_method=S256&`
       );
     }
   });
@@ -45,6 +81,7 @@ function App(props) {
             </li>
           </ul>
           <Route exact path='/' component={Home} />
+          <Route path='/callback' component={Callback} />
           <Route path='/login' component={Login} />
           <Route path='/signup' component={SignUp} />
           <PrivateRoute path='/admin' component={Admin} />
