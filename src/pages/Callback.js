@@ -27,8 +27,7 @@ function Callback() {
         headers: { 'Content-Type': 'multipart/form-data' },
       })
         .then(function (response) {
-          console.log(response.data);
-
+          // TODO: Attach the token to the AuthContext token, so that it can be used as a flag for 'authentication' state in the rest of the app
           axios
             .get('https://localhost:5000/api/v1/organisation/?page=1', {
               headers: {
@@ -36,7 +35,16 @@ function Callback() {
               },
             })
             .then(function (res) {
-              console.log('Organisation', res.data);
+              console.log('organisations', res.data);
+              // removed the state and verifier from localStorage
+              window.localStorage.removeItem('state');
+              window.localStorage.removeItem('verifier');
+
+              // Removed the authorization_code and state query params
+              const url = new URL(window.location);
+              url.searchParams.delete('authorization_code');
+              url.searchParams.delete('state');
+              window.history.replaceState(null, null, url);
             });
         })
         .catch(function (error) {
