@@ -1,3 +1,8 @@
+References:
+
+- [How To Securely Implement Authentication in Single Page Applications](https://medium.com/better-programming/how-to-securely-implement-authentication-in-single-page-applications-670534da746f)
+- [How To Implement Authentication in React Using Auth0](https://medium.com/better-programming/how-to-implement-authentication-in-react-using-auth0-1b5ecb6c8fe0)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
